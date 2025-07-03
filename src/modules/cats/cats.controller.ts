@@ -1,7 +1,7 @@
-/* eslint-disable prettier/prettier */
 import { Controller, Get, Res, Req, Post, HttpCode, Redirect, Query, Param, HostParam, Body, HttpStatus } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { CreateCatDto } from './cats.dto';
+import { CatsService } from './cats.service';
 
 
 /*
@@ -12,6 +12,8 @@ import { CreateCatDto } from './cats.dto';
 */
 @Controller('cats')
 export class CatsController {
+
+  constructor(private catsService: CatsService) { }
   @Get("getAllCats") // ? the @Get() HTTP request method decorator placed before the the FindAll() method tells NestJS that this method should handle GET requests to the /cats endpoint.
   findAll(@Req() request: Request, @Res() response: Response) {
     // ! Request Object
@@ -75,6 +77,7 @@ export class CatsController {
   createWithPayload(@Body() request: CreateCatDto): string {
     // ? the @Body() decorator allows you to access the request payload sent in the body of the request.
     console.log(request);
+    this.catsService.create(request);
     return `Cat created with name: ${request.name}, age: ${request.age}, breed: ${request.breed}`;
   }
 
@@ -83,6 +86,7 @@ export class CatsController {
   findAllFiltered(@Query('age') age: number, @Query('breed') breed: string) {
     return `This action returns all cats filtered by age: ${age} and breed: ${breed}`;
   }
+
 
 }
 
